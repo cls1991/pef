@@ -1,33 +1,33 @@
-dp
-==
+pef
+===
 
-.. image:: https://img.shields.io/pypi/l/dp.svg
-    :target: https://pypi.python.org/pypi/dp
+.. image:: https://img.shields.io/pypi/l/pef.svg
+    :target: https://pypi.python.org/pypi/pef
 
-.. image:: https://img.shields.io/pypi/v/dp.svg
-    :target: https://pypi.python.org/pypi/dp
+.. image:: https://img.shields.io/pypi/v/pef.svg
+    :target: https://pypi.python.org/pypi/pef
 
-.. image:: https://img.shields.io/pypi/pyversions/dp.svg
-    :target: https://pypi.python.org/pypi/dp
+.. image:: https://img.shields.io/pypi/pyversions/pef.svg
+    :target: https://pypi.python.org/pypi/pef
 
 Enhancement for pip uninstall command, that it removes all dependencies of an uninstalled package.
 
 ☤ Installation
 --------------
 
-You can install "dp" via pip from `PyPI <https://pypi.python.org/pypi/dp>`_:
+You can install "pef" via pip from `PyPI <https://pypi.python.org/pypi/pef>`_:
 
 ::
 
-    $ pip install dp
+    $ pip install pef
 	
 ☤ Usage
 -------
 
 ::
 
-    $ dp --help
-    Usage: dp [OPTIONS] [PACKAGES]...
+    $ pef --help
+    Usage: pef [OPTIONS] [PACKAGES]...
 
     Remove packages and theirs dependencies.
 

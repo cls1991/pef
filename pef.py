@@ -1,7 +1,7 @@
 # coding: utf8
 
 """
-    dp removes all dependencies of an uninstalled package.
+    pef removes all dependencies of an uninstalled package.
 """
 
 import click
@@ -11,7 +11,7 @@ import click
 @click.argument('packages', nargs=-1)
 def cli(packages):
     """Remove packages and theirs dependencies."""
-    click.secho('dp: {0}'.format(' '.join(packages)))
+    click.secho('pef: {0}'.format(' '.join(packages)))
 
 
 if __name__ == '__main__':

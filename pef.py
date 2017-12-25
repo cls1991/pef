@@ -29,6 +29,13 @@ def _encode(u):
     return u
 
 
+def _is_venv():
+    """
+    :return:
+    """
+    return hasattr(sys, 'real_prefix') or getattr(sys, 'base_prefix', sys.prefix) != sys.prefix
+
+
 class DistInfo(object):
     # @TODO: to be expanded
     SKIP_MODULES = ['wheel', 'setuptools', 'pip']
@@ -85,7 +92,7 @@ class DistInfo(object):
 @click.option('-y', '--yes', is_flag=True, help="Don't ask for confirmation of uninstall deletions.")
 def cli(packages, yes):
     """Uninstall packages with all its dependencies."""
-    if not hasattr(sys, "base_prefix"):
+    if not _is_venv():
         click.secho(
             click.style("Warning! You are not in an active virtual environment. This may purge system-level packages!",
                         fg='red'))

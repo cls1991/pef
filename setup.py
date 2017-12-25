@@ -10,15 +10,14 @@ setup(
     name='pef',
     version='0.1.0',
     keywords=['pip', 'dependency'],
-    description='Yet another .gitignore magician in your command line.',
+    description='Enhancement for pip uninstall command, that it removes all dependencies of an uninstalled package.',
     long_description=readme,
     author='cls1991',
     author_email='tzk19910406@hotmail.com',
     url='https://github.com/cls1991/pef',
     py_modules=['pef'],
     install_requires=[
-        'click>=6.7',
-        'colorama>=0.3.9'
+        'click>=6.7'
     ],
     license='Apache License 2.0',
     zip_safe=False,

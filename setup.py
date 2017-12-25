@@ -8,7 +8,7 @@ with open('README.rst', 'r') as f:
 
 setup(
     name='pef',
-    version='0.1.0',
+    version='1.0.5',
     keywords=['pip', 'dependency'],
     description='Enhancement for pip uninstall command, that it removes all dependencies of an uninstalled package.',
     long_description=readme,
@@ -25,7 +25,7 @@ setup(
         'console_scripts': ['pef = pef:cli']
     },
     classifiers=[
-        'Development Status :: 1 - Planning',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Natural Language :: English',
         'License :: OSI Approved :: Apache Software License',

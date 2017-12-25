@@ -34,61 +34,85 @@ class DistInfo(object):
     SKIP_MODULES = ['wheel', 'setuptools', 'pip']
 
     def __init__(self, dist):
-        self.keys = []
         self.requires = {}
         self.references = {}
+        self.keys = [d.key for d in dist if d.key not in self.SKIP_MODULES]
         for d in dist:
             if d.key not in self.SKIP_MODULES:
-                self.keys.append(d.key)
                 if d.key not in self.requires:
                     self.requires[d.key] = []
                 for r in d.requires():
-                    self.requires[d.key].append(r.key)
+                    if r.key in self.keys:
+                        self.requires[d.key].append(r.key)
                     if r.key not in self.references:
                         self.references[r.key] = 0
                     self.references[r.key] += 1
 
+        self.rm = []
+        self.kp = []
+
     def __repr__(self):
         return 'keys:{0}\nrequires:{1}\nreferences:{2}'.format(self.keys, self.requires, self.references)
 
-    def weaken(self, root):
+    def purge(self, node):
         """
-        :param root:
+        :param node:
         :return:
         """
-        if root in self.references:
-            self.references[root] -= 1
-        for r in self.requires.get(root, []):
-            self.weaken(r)
-
-    def clear(self, root, vis=None):
-        """
-        :param root:
-        :param vis:
-        :return:
-        """
-        rm = []
-        if not self.references.get(root):
-            rm.append(root)
-        if not vis:
-            vis = [root]
-        for r in self.requires.get(root, []):
-            if r not in vis:
-                vis.append(r)
-                rm.extend(self.clear(r, vis))
-
-        return rm
+        rc = self.references.get(node)
+        if rc:
+            rc = 0 if rc < 0 else rc - 1
+            self.references[node] = rc
+            if rc > 0:
+                if node not in self.kp:
+                    self.kp.append(node)
+                return
+        for r in self.requires.get(node, []):
+            self.purge(r)
+        if not rc and node not in self.SKIP_MODULES:
+            if node not in self.rm:
+                self.rm.append(node)
+            if node in self.keys:
+                self.keys.remove(node)
+            if self.requires.get(node):
+                self.requires[node] = []
+            if node in self.kp:
+                self.kp.remove(node)
 
 
 @click.command()
 @click.argument('packages', nargs=-1)
-def cli(packages):
+@click.option('-y', '--yes', is_flag=True, help="Don't ask for confirmation of uninstall deletions.")
+def cli(packages, yes):
     """Uninstall packages with all its dependencies."""
+    if not hasattr(sys, "base_prefix"):
+        click.secho(
+            click.style("Warning! You are not in an active virtual environment. This may purge system-level packages!",
+                        fg='red'))
+        sys.exit(1)
+    if not packages:
+        click.secho(click.style("Packages can't be empty, please run `pef --help` for more details.", fg='yellow'))
+        sys.exit(0)
+    prune = []
     pkg = pip.get_installed_distributions()
-    di = DistInfo(pkg)
+    df = DistInfo(pkg)
     for p in packages:
-        di.weaken(p)
-        print(di.clear(p))
+        if p not in df.keys:
+            click.secho(click.style('Cannot uninstall requirement {0}, not installed.'.format(p), fg='yellow'))
+            continue
+        df.purge(_encode(p))
+        prune.extend(df.rm)
+
+    if df.kp:
+        click.secho(click.style(
+            'Module {0} is referenced by more than one other modules, to remain unchanged.'.format(', '.join(df.kp)),
+            fg='yellow'))
+    if prune:
+        cmd = ['uninstall']
+        if yes:
+            cmd.append('-y')
+        cmd.extend(list(set(prune)))
+        pip.main(cmd)
 
 
 if __name__ == '__main__':

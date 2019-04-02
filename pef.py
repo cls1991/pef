@@ -5,9 +5,10 @@
 """
 
 import sys
+import subprocess
 
 import click
-import pip
+import pkg_resources
 
 _ver = sys.version_info
 
@@ -101,7 +102,7 @@ def cli(packages, yes):
         click.secho(click.style("Packages can't be empty, please run `pef --help` for more details.", fg='yellow'))
         sys.exit(0)
     prune = []
-    pkg = pip.get_installed_distributions()
+    pkg = pkg_resources.working_set
     df = DistInfo(pkg)
     for p in packages:
         if p not in df.keys:
@@ -115,11 +116,10 @@ def cli(packages, yes):
             'Module {0} is referenced by more than one other modules, to remain unchanged.'.format(', '.join(df.kp)),
             fg='yellow'))
     if prune:
-        cmd = ['uninstall']
+        cmd = [sys.executable, '-m', 'pip', 'uninstall']
         if yes:
             cmd.append('-y')
-        cmd.extend(list(set(prune)))
-        pip.main(cmd)
+        subprocess.check_call(cmd)
 
 
 if __name__ == '__main__':

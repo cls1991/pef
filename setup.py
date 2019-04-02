@@ -8,7 +8,7 @@ with open('README.rst', 'r') as f:
 
 setup(
     name='pef',
-    version='1.0.6',
+    version='1.1.0',
     keywords=['pip', 'dependency'],
     description='Enhancement for pip uninstall command, that it removes all dependencies of an uninstalled package.',
     long_description=readme,

@@ -119,6 +119,7 @@ def cli(packages, yes):
         cmd = [sys.executable, '-m', 'pip', 'uninstall']
         if yes:
             cmd.append('-y')
+        cmd.extend(list(set(prune)))
         subprocess.check_call(cmd)
 
 
